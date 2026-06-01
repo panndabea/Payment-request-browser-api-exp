@@ -1,0 +1,571 @@
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Premium Luft™ · Payment Request API Demo</title>
+  <style>
+    :root {
+      --bg: #070b1a;
+      --bg-soft: #111a31;
+      --text: #eef2ff;
+      --muted: #b7c1e8;
+      --glass: rgba(255, 255, 255, 0.1);
+      --line: rgba(255, 255, 255, 0.18);
+      --primary: #72d8ff;
+      --secondary: #ad80ff;
+      --success: #7bffc3;
+      --radius: 18px;
+      --shadow: 0 20px 45px rgba(0, 0, 0, 0.35);
+    }
+
+    * { box-sizing: border-box; }
+
+    html, body {
+      margin: 0;
+      min-height: 100%;
+      font-family: Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      background: radial-gradient(circle at 15% 15%, #1d2958 0%, transparent 35%),
+                  radial-gradient(circle at 85% 10%, #402069 0%, transparent 35%),
+                  radial-gradient(circle at 50% 100%, #123752 0%, transparent 45%),
+                  var(--bg);
+      color: var(--text);
+      overflow-x: hidden;
+    }
+
+    body::before,
+    body::after {
+      content: "";
+      position: fixed;
+      width: 340px;
+      height: 340px;
+      border-radius: 50%;
+      filter: blur(45px);
+      z-index: -1;
+      opacity: 0.35;
+      animation: float 12s ease-in-out infinite;
+    }
+
+    body::before {
+      background: var(--primary);
+      left: -120px;
+      top: -80px;
+    }
+
+    body::after {
+      background: var(--secondary);
+      right: -110px;
+      bottom: -130px;
+      animation-delay: -6s;
+    }
+
+    @keyframes float {
+      0%, 100% { transform: translateY(0) translateX(0); }
+      50% { transform: translateY(18px) translateX(-6px); }
+    }
+
+    .container {
+      width: min(1040px, 92vw);
+      margin: 0 auto;
+      padding: 22px 0 40px;
+    }
+
+    .hero,
+    .section,
+    .purchase-card {
+      background: var(--glass);
+      border: 1px solid var(--line);
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+    }
+
+    .hero {
+      padding: 24px;
+      margin-bottom: 20px;
+    }
+
+    .badge {
+      display: inline-block;
+      padding: 7px 12px;
+      border-radius: 999px;
+      font-size: 0.78rem;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      border: 1px solid rgba(255, 255, 255, 0.3);
+      color: var(--muted);
+      margin-bottom: 12px;
+      background: rgba(255, 255, 255, 0.05);
+    }
+
+    h1 {
+      margin: 0;
+      font-size: clamp(2rem, 6vw, 3.2rem);
+      line-height: 1.05;
+      letter-spacing: -0.02em;
+    }
+
+    .hero p {
+      margin: 12px 0 0;
+      color: var(--muted);
+      font-size: 1rem;
+      max-width: 62ch;
+    }
+
+    .pulse {
+      font-weight: 700;
+      color: #d9f5ff;
+    }
+
+    .layout {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 16px;
+    }
+
+    .purchase-card {
+      padding: 18px;
+      position: sticky;
+      top: 12px;
+      align-self: start;
+    }
+
+    .card-title {
+      margin: 0 0 4px;
+      font-size: 1.2rem;
+      letter-spacing: -0.01em;
+    }
+
+    .card-sub {
+      margin: 0 0 14px;
+      color: var(--muted);
+      font-size: 0.95rem;
+    }
+
+    .packages {
+      display: grid;
+      gap: 10px;
+      margin-bottom: 14px;
+    }
+
+    .package-option {
+      position: relative;
+      display: grid;
+      gap: 2px;
+      border: 1px solid rgba(255, 255, 255, 0.18);
+      border-radius: 14px;
+      padding: 12px;
+      background: rgba(255, 255, 255, 0.03);
+      transition: transform .18s ease, border-color .18s ease, background .18s ease;
+    }
+
+    .package-option:hover,
+    .package-option:focus-within {
+      transform: translateY(-1px);
+      border-color: rgba(114, 216, 255, 0.9);
+      background: rgba(114, 216, 255, 0.08);
+    }
+
+    .package-option input {
+      position: absolute;
+      inset: 0;
+      opacity: 0;
+      cursor: pointer;
+    }
+
+    .package-option[data-selected="true"] {
+      border-color: rgba(123, 255, 195, 0.95);
+      background: rgba(123, 255, 195, 0.12);
+    }
+
+    .package-label {
+      font-weight: 700;
+      font-size: 1rem;
+    }
+
+    .package-price {
+      color: #d6deff;
+      font-size: 0.93rem;
+    }
+
+    .buy-btn {
+      width: 100%;
+      border: 0;
+      border-radius: 14px;
+      background: linear-gradient(130deg, var(--primary), var(--secondary));
+      color: #061129;
+      font-size: 1rem;
+      font-weight: 700;
+      padding: 14px;
+      cursor: pointer;
+      transition: transform .14s ease, filter .18s ease;
+    }
+
+    .buy-btn:hover,
+    .buy-btn:focus-visible {
+      transform: translateY(-1px) scale(1.01);
+      filter: brightness(1.06);
+    }
+
+    .buy-btn:active { transform: scale(0.985); }
+
+    .buy-btn[disabled] {
+      opacity: .65;
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    .fallback,
+    .status {
+      margin-top: 12px;
+      border-radius: 12px;
+      padding: 10px 12px;
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      background: rgba(8, 18, 36, 0.62);
+      font-size: 0.93rem;
+      color: #dce7ff;
+    }
+
+    .fallback { border-color: rgba(255, 170, 123, 0.65); }
+    .status { border-color: rgba(123, 255, 195, 0.65); }
+
+    .section {
+      padding: 18px;
+      margin-bottom: 16px;
+    }
+
+    .section h2 {
+      margin: 0 0 10px;
+      font-size: 1.2rem;
+      letter-spacing: -0.01em;
+    }
+
+    .sales-number {
+      font-size: clamp(1.8rem, 6vw, 2.8rem);
+      font-weight: 800;
+      letter-spacing: -0.03em;
+      margin: 2px 0 8px;
+      color: #d8f2ff;
+    }
+
+    .tiny { color: var(--muted); font-size: 0.9rem; margin: 0; }
+
+    .reviews {
+      display: grid;
+      gap: 10px;
+      margin: 0;
+      padding: 0;
+      list-style: none;
+    }
+
+    .reviews li {
+      border-radius: 12px;
+      border: 1px solid rgba(255, 255, 255, 0.14);
+      padding: 11px;
+      background: rgba(255, 255, 255, 0.03);
+    }
+
+    .faq details {
+      border-bottom: 1px solid rgba(255, 255, 255, 0.15);
+      padding: 10px 0;
+    }
+
+    .faq summary {
+      cursor: pointer;
+      font-weight: 650;
+      list-style: none;
+    }
+
+    .faq summary::-webkit-details-marker { display: none; }
+
+    .faq p {
+      margin: 8px 0 0;
+      color: var(--muted);
+    }
+
+    .easter {
+      margin-top: 10px;
+      font-size: 0.88rem;
+      color: #cbd6ff;
+      opacity: .85;
+    }
+
+    .confetti {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      overflow: hidden;
+      z-index: 50;
+    }
+
+    .confetti-piece {
+      position: absolute;
+      width: 9px;
+      height: 14px;
+      top: -20px;
+      border-radius: 2px;
+      opacity: 0.95;
+      animation: drop linear forwards;
+    }
+
+    @keyframes drop {
+      from { transform: translateY(0) rotate(0deg); }
+      to { transform: translateY(110vh) rotate(760deg); }
+    }
+
+    @media (min-width: 860px) {
+      .layout { grid-template-columns: 1.1fr .9fr; }
+      .hero { padding: 34px; }
+      .purchase-card { padding: 22px; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        animation-duration: 0.001ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.001ms !important;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header class="hero" aria-labelledby="hero-title">
+      <span class="badge">Satirische Payment-Demo</span>
+      <h1 id="hero-title">Premium Luft™<br />Jetzt in digital komprimierter Qualität.</h1>
+      <p>
+        Das einzige Produkt, das Sie schon besitzen – aber noch nicht bezahlt haben.
+        Weltweit vertrauen bereits Millionen auf unser patentiertes
+        <span class="pulse">Atem-zu-Abo-Modell</span>.
+      </p>
+    </header>
+
+    <main class="layout">
+      <section>
+        <article class="section" aria-live="polite">
+          <h2>Weltweite Luft-Verkäufe</h2>
+          <p class="sales-number" id="salesCounter">2.154.800</p>
+          <p class="tiny">Aktualisiert in Echtzeit* (*leicht dramatisiert).</p>
+        </article>
+
+        <article class="section">
+          <h2>Was Kund:innen sagen</h2>
+          <ul class="reviews">
+            <li>“Hat mein Leben verändert. Jetzt atme ich bewusster.”</li>
+            <li>“Die beste Luft seit Jahren.”</li>
+            <li>“Ich wollte nur testen, jetzt besitze ich Luft in 4K.”</li>
+          </ul>
+        </article>
+
+        <article class="section faq">
+          <h2>FAQ</h2>
+          <details>
+            <summary>Ist die Luft wirklich digital?</summary>
+            <p>Natürlich. Wir haben sie sorgfältig in Nullen und Einsen umgewandelt.</p>
+          </details>
+          <details>
+            <summary>Was ist „Luft von gestern“?</summary>
+            <p>Vintage-Luft mit emotionalem Retro-Aroma. Sehr sammelwürdig.</p>
+          </details>
+          <details>
+            <summary>Kann ich die Luft zurückgeben?</summary>
+            <p>Nur ungeatmet und originalverpackt im Browser-Cache.</p>
+          </details>
+          <p class="easter" id="easterEggHint">Tipp: Tippen Sie 3× auf das Logo-Wort „Premium Luft™“.</p>
+        </article>
+      </section>
+
+      <aside class="purchase-card" aria-label="Kaufbereich">
+        <h2 class="card-title">Luftpaket wählen</h2>
+        <p class="card-sub">Sichern Sie sich Ihre persönliche Premium-Atmosphäre.</p>
+
+        <form id="airForm" class="packages" aria-label="Luftpakete">
+          <label class="package-option" data-selected="true">
+            <input type="radio" name="airPackage" value="kleine" checked />
+            <span class="package-label">Kleine Luft</span>
+            <span class="package-price">0,99&nbsp;€</span>
+          </label>
+
+          <label class="package-option">
+            <input type="radio" name="airPackage" value="premium" />
+            <span class="package-label">Premium Luft</span>
+            <span class="package-price">2,99&nbsp;€</span>
+          </label>
+
+          <label class="package-option">
+            <input type="radio" name="airPackage" value="deluxe" />
+            <span class="package-label">Deluxe Bergluft</span>
+            <span class="package-price">9,99&nbsp;€</span>
+          </label>
+
+          <label class="package-option">
+            <input type="radio" name="airPackage" value="sammler" />
+            <span class="package-label">Sammler-Edition Luft von gestern</span>
+            <span class="package-price">19,99&nbsp;€</span>
+          </label>
+        </form>
+
+        <button id="buyButton" class="buy-btn" type="button">Jetzt Luft kaufen</button>
+        <div id="fallbackMessage" class="fallback" hidden></div>
+        <div id="statusMessage" class="status" hidden aria-live="polite"></div>
+      </aside>
+    </main>
+  </div>
+
+  <div class="confetti" id="confetti" aria-hidden="true"></div>
+
+  <script>
+    // Produktkatalog für Payment Request Details.
+    const AIR_PACKAGES = {
+      kleine: { label: 'Kleine Luft', value: '0.99' },
+      premium: { label: 'Premium Luft', value: '2.99' },
+      deluxe: { label: 'Deluxe Bergluft', value: '9.99' },
+      sammler: { label: 'Sammler-Edition Luft von gestern', value: '19.99' }
+    };
+
+    const salesCounter = document.getElementById('salesCounter');
+    const buyButton = document.getElementById('buyButton');
+    const fallbackMessage = document.getElementById('fallbackMessage');
+    const statusMessage = document.getElementById('statusMessage');
+    const packageInputs = document.querySelectorAll('input[name="airPackage"]');
+    const packageCards = document.querySelectorAll('.package-option');
+    const confettiLayer = document.getElementById('confetti');
+    const heroTitle = document.getElementById('hero-title');
+
+    let salesValue = 2154800 + Math.floor(Math.random() * 900);
+    let heroTapCount = 0;
+
+    function formatGermanInteger(number) {
+      return new Intl.NumberFormat('de-DE').format(number);
+    }
+
+    function getSelectedPackage() {
+      const checked = document.querySelector('input[name="airPackage"]:checked');
+      return AIR_PACKAGES[checked ? checked.value : 'kleine'];
+    }
+
+    function updateSelectionStyles() {
+      packageCards.forEach((card) => {
+        const radio = card.querySelector('input[type="radio"]');
+        card.dataset.selected = radio.checked ? 'true' : 'false';
+      });
+    }
+
+    function setStatus(message, visible = true) {
+      statusMessage.textContent = message;
+      statusMessage.hidden = !visible;
+    }
+
+    function createPaymentRequestData(selectedPackage) {
+      return {
+        methodData: [{ supportedMethods: 'basic-card' }],
+        details: {
+          displayItems: [
+            {
+              label: selectedPackage.label,
+              amount: { currency: 'EUR', value: selectedPackage.value }
+            }
+          ],
+          total: {
+            label: 'Premium Luft™ Bestellung',
+            amount: { currency: 'EUR', value: selectedPackage.value }
+          }
+        },
+        options: {
+          requestPayerName: true,
+          requestPayerEmail: true
+        }
+      };
+    }
+
+    function launchConfetti() {
+      const colors = ['#72d8ff', '#ad80ff', '#7bffc3', '#ffd37e', '#ff8cb3'];
+      const count = 70;
+
+      for (let i = 0; i < count; i += 1) {
+        const piece = document.createElement('span');
+        piece.className = 'confetti-piece';
+        piece.style.left = `${Math.random() * 100}%`;
+        piece.style.background = colors[Math.floor(Math.random() * colors.length)];
+        piece.style.animationDuration = `${2.4 + Math.random() * 1.8}s`;
+        piece.style.opacity = `${0.75 + Math.random() * 0.25}`;
+        confettiLayer.appendChild(piece);
+        piece.addEventListener('animationend', () => piece.remove(), { once: true });
+      }
+    }
+
+    async function handlePurchase() {
+      const selectedPackage = getSelectedPackage();
+
+      if (!window.PaymentRequest) {
+        fallbackMessage.textContent = 'Ihr Browser unterstützt leider keine Premium-Luft-Transaktionen.';
+        fallbackMessage.hidden = false;
+        return;
+      }
+
+      fallbackMessage.hidden = true;
+      setStatus('Luft wird für den Bezahlvorgang vorbereitet …');
+
+      try {
+        const { methodData, details, options } = createPaymentRequestData(selectedPackage);
+        const request = new PaymentRequest(methodData, details, options);
+
+        const canPay = await request.canMakePayment().catch(() => true);
+        if (!canPay) {
+          fallbackMessage.textContent = 'Ihr Browser unterstützt leider keine Premium-Luft-Transaktionen.';
+          fallbackMessage.hidden = false;
+          setStatus('', false);
+          return;
+        }
+
+        const paymentResponse = await request.show();
+        await paymentResponse.complete('success');
+
+        setStatus('Ihre Luft wird nun digital komprimiert und ausgeliefert.');
+        launchConfetti();
+        salesValue += Math.floor(20 + Math.random() * 60);
+        salesCounter.textContent = formatGermanInteger(salesValue);
+      } catch (error) {
+        setStatus('Bestellung abgebrochen. Die Luft bleibt vorerst im Warenkorb der Atmosphäre.');
+      }
+    }
+
+    function animateSalesCounter() {
+      salesCounter.textContent = formatGermanInteger(salesValue);
+      setInterval(() => {
+        salesValue += Math.floor(Math.random() * 6);
+        salesCounter.textContent = formatGermanInteger(salesValue);
+      }, 1800);
+    }
+
+    function setupEasterEgg() {
+      heroTitle.addEventListener('click', () => {
+        heroTapCount += 1;
+        if (heroTapCount === 3) {
+          setStatus('Easter Egg freigeschaltet: +1 unsichtbare Probierluft in Ihrem Konto!');
+          launchConfetti();
+          heroTapCount = 0;
+        }
+      });
+    }
+
+    packageInputs.forEach((input) => {
+      input.addEventListener('change', updateSelectionStyles);
+    });
+
+    buyButton.addEventListener('click', handlePurchase);
+
+    // Initialisierung der dynamischen Elemente.
+    updateSelectionStyles();
+    animateSalesCounter();
+    setupEasterEgg();
+
+    if (!window.PaymentRequest) {
+      buyButton.disabled = true;
+      fallbackMessage.textContent = 'Ihr Browser unterstützt leider keine Premium-Luft-Transaktionen.';
+      fallbackMessage.hidden = false;
+    }
+  </script>
+</body>
+</html>
