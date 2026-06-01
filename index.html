@@ -2,21 +2,24 @@
 <html lang="de">
 <head>
   <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Premium Luft™ · Payment Request API Demo</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>Premium Luft™ · Apple Pay & Google Pay Demo</title>
   <style>
     :root {
-      --bg: #070b1a;
-      --bg-soft: #111a31;
-      --text: #eef2ff;
-      --muted: #b7c1e8;
-      --glass: rgba(255, 255, 255, 0.1);
+      --bg: #070b18;
+      --bg-2: #101931;
+      --text: #eef3ff;
+      --muted: #b8c6ef;
       --line: rgba(255, 255, 255, 0.18);
-      --primary: #72d8ff;
-      --secondary: #ad80ff;
-      --success: #7bffc3;
+      --glass: rgba(255, 255, 255, 0.1);
+      --glass-strong: rgba(255, 255, 255, 0.16);
+      --primary: #78d9ff;
+      --secondary: #ad83ff;
+      --success: #8bffd0;
+      --warning: #ffcf8d;
+      --danger: #ff9696;
       --radius: 18px;
-      --shadow: 0 20px 45px rgba(0, 0, 0, 0.35);
+      --shadow: 0 20px 50px rgba(0, 0, 0, 0.4);
     }
 
     * { box-sizing: border-box; }
@@ -25,11 +28,12 @@
       margin: 0;
       min-height: 100%;
       font-family: Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-      background: radial-gradient(circle at 15% 15%, #1d2958 0%, transparent 35%),
-                  radial-gradient(circle at 85% 10%, #402069 0%, transparent 35%),
-                  radial-gradient(circle at 50% 100%, #123752 0%, transparent 45%),
-                  var(--bg);
       color: var(--text);
+      background:
+        radial-gradient(circle at 15% 8%, #1d2f66 0%, transparent 34%),
+        radial-gradient(circle at 86% 12%, #442070 0%, transparent 36%),
+        radial-gradient(circle at 55% 100%, #124260 0%, transparent 42%),
+        var(--bg);
       overflow-x: hidden;
     }
 
@@ -37,42 +41,40 @@
     body::after {
       content: "";
       position: fixed;
-      width: 340px;
-      height: 340px;
       border-radius: 50%;
-      filter: blur(45px);
-      z-index: -1;
+      width: 320px;
+      height: 320px;
+      filter: blur(46px);
       opacity: 0.35;
+      z-index: -1;
       animation: float 12s ease-in-out infinite;
     }
 
     body::before {
-      background: var(--primary);
       left: -120px;
-      top: -80px;
+      top: -120px;
+      background: var(--primary);
     }
 
     body::after {
-      background: var(--secondary);
       right: -110px;
-      bottom: -130px;
+      bottom: -140px;
+      background: var(--secondary);
       animation-delay: -6s;
     }
 
     @keyframes float {
       0%, 100% { transform: translateY(0) translateX(0); }
-      50% { transform: translateY(18px) translateX(-6px); }
+      50% { transform: translateY(20px) translateX(-8px); }
     }
 
     .container {
-      width: min(1040px, 92vw);
+      width: min(1080px, 92vw);
       margin: 0 auto;
-      padding: 22px 0 40px;
+      padding: 18px 0 30px;
     }
 
-    .hero,
-    .section,
-    .purchase-card {
+    .glass {
       background: var(--glass);
       border: 1px solid var(--line);
       backdrop-filter: blur(14px);
@@ -82,63 +84,62 @@
     }
 
     .hero {
-      padding: 24px;
-      margin-bottom: 20px;
+      padding: 20px;
+      margin-bottom: 16px;
     }
 
     .badge {
       display: inline-block;
       padding: 7px 12px;
       border-radius: 999px;
+      border: 1px solid rgba(255, 255, 255, 0.28);
+      color: #d5e2ff;
+      background: rgba(255, 255, 255, 0.05);
       font-size: 0.78rem;
       letter-spacing: 0.04em;
       text-transform: uppercase;
-      border: 1px solid rgba(255, 255, 255, 0.3);
-      color: var(--muted);
-      margin-bottom: 12px;
-      background: rgba(255, 255, 255, 0.05);
+      margin-bottom: 10px;
     }
 
     h1 {
       margin: 0;
-      font-size: clamp(2rem, 6vw, 3.2rem);
-      line-height: 1.05;
+      line-height: 1.06;
+      font-size: clamp(2rem, 8vw, 3.2rem);
       letter-spacing: -0.02em;
     }
 
     .hero p {
-      margin: 12px 0 0;
+      margin: 10px 0 0;
       color: var(--muted);
-      font-size: 1rem;
-      max-width: 62ch;
-    }
-
-    .pulse {
-      font-weight: 700;
-      color: #d9f5ff;
+      max-width: 66ch;
     }
 
     .layout {
       display: grid;
+      gap: 14px;
       grid-template-columns: 1fr;
-      gap: 16px;
     }
 
-    .purchase-card {
-      padding: 18px;
+    .card,
+    .purchase {
+      padding: 16px;
+    }
+
+    .purchase {
       position: sticky;
-      top: 12px;
+      top: 10px;
       align-self: start;
     }
 
-    .card-title {
-      margin: 0 0 4px;
-      font-size: 1.2rem;
+    .card h2,
+    .purchase h2 {
+      margin: 0 0 8px;
       letter-spacing: -0.01em;
+      font-size: 1.2rem;
     }
 
-    .card-sub {
-      margin: 0 0 14px;
+    .sub {
+      margin: 0 0 12px;
       color: var(--muted);
       font-size: 0.95rem;
     }
@@ -149,132 +150,150 @@
       margin-bottom: 14px;
     }
 
-    .package-option {
+    .package {
       position: relative;
       display: grid;
       gap: 2px;
-      border: 1px solid rgba(255, 255, 255, 0.18);
       border-radius: 14px;
-      padding: 12px;
+      border: 1px solid rgba(255, 255, 255, 0.2);
       background: rgba(255, 255, 255, 0.03);
-      transition: transform .18s ease, border-color .18s ease, background .18s ease;
+      padding: 11px 12px;
+      transition: transform .16s ease, border-color .16s ease, background .16s ease;
     }
 
-    .package-option:hover,
-    .package-option:focus-within {
+    .package:hover,
+    .package:focus-within {
       transform: translateY(-1px);
-      border-color: rgba(114, 216, 255, 0.9);
-      background: rgba(114, 216, 255, 0.08);
+      border-color: rgba(120, 217, 255, 0.85);
+      background: rgba(120, 217, 255, 0.1);
     }
 
-    .package-option input {
+    .package[data-selected="true"] {
+      border-color: rgba(139, 255, 208, 0.85);
+      background: rgba(139, 255, 208, 0.12);
+    }
+
+    .package input {
       position: absolute;
       inset: 0;
       opacity: 0;
       cursor: pointer;
     }
 
-    .package-option[data-selected="true"] {
-      border-color: rgba(123, 255, 195, 0.95);
-      background: rgba(123, 255, 195, 0.12);
-    }
-
-    .package-label {
+    .package-title {
       font-weight: 700;
-      font-size: 1rem;
+      font-size: 0.98rem;
     }
 
     .package-price {
-      color: #d6deff;
+      color: #dce6ff;
       font-size: 0.93rem;
     }
 
-    .buy-btn {
-      width: 100%;
+    .pay-row {
+      display: grid;
+      gap: 8px;
+      margin-top: 8px;
+    }
+
+    .pay-btn {
       border: 0;
       border-radius: 14px;
-      background: linear-gradient(130deg, var(--primary), var(--secondary));
-      color: #061129;
-      font-size: 1rem;
+      padding: 13px;
+      width: 100%;
+      font-size: 0.98rem;
       font-weight: 700;
-      padding: 14px;
       cursor: pointer;
-      transition: transform .14s ease, filter .18s ease;
+      transition: transform .14s ease, filter .16s ease;
     }
 
-    .buy-btn:hover,
-    .buy-btn:focus-visible {
-      transform: translateY(-1px) scale(1.01);
-      filter: brightness(1.06);
+    .pay-btn:hover,
+    .pay-btn:focus-visible {
+      transform: translateY(-1px);
+      filter: brightness(1.05);
     }
 
-    .buy-btn:active { transform: scale(0.985); }
+    .pay-btn:active { transform: scale(0.988); }
 
-    .buy-btn[disabled] {
-      opacity: .65;
+    .pay-btn[disabled] {
+      opacity: 0.65;
       cursor: not-allowed;
       transform: none;
     }
 
-    .fallback,
-    .status {
-      margin-top: 12px;
+    .apple {
+      background: linear-gradient(120deg, #0f0f12, #30303a);
+      color: #fff;
+      border: 1px solid rgba(255, 255, 255, 0.25);
+    }
+
+    .google {
+      background: linear-gradient(130deg, var(--primary), var(--secondary));
+      color: #071329;
+    }
+
+    .msg {
+      margin-top: 10px;
       border-radius: 12px;
       padding: 10px 12px;
       border: 1px solid rgba(255, 255, 255, 0.2);
-      background: rgba(8, 18, 36, 0.62);
-      font-size: 0.93rem;
-      color: #dce7ff;
+      background: rgba(8, 18, 36, 0.68);
+      font-size: 0.92rem;
+      line-height: 1.35;
     }
 
-    .fallback { border-color: rgba(255, 170, 123, 0.65); }
-    .status { border-color: rgba(123, 255, 195, 0.65); }
-
-    .section {
-      padding: 18px;
-      margin-bottom: 16px;
+    .msg.warning {
+      border-color: rgba(255, 207, 141, 0.8);
+      color: #ffe2ba;
+      background: rgba(90, 55, 0, 0.24);
     }
 
-    .section h2 {
-      margin: 0 0 10px;
-      font-size: 1.2rem;
-      letter-spacing: -0.01em;
+    .msg.danger {
+      border-color: rgba(255, 150, 150, 0.8);
+      color: #ffd4d4;
+      background: rgba(84, 13, 13, 0.3);
     }
 
-    .sales-number {
-      font-size: clamp(1.8rem, 6vw, 2.8rem);
-      font-weight: 800;
+    .msg.success {
+      border-color: rgba(139, 255, 208, 0.85);
+      color: #d8ffe9;
+      background: rgba(0, 60, 35, 0.35);
+    }
+
+    .tiny { margin: 0; color: var(--muted); font-size: 0.9rem; }
+
+    .sales {
+      font-size: clamp(1.8rem, 7vw, 2.8rem);
       letter-spacing: -0.03em;
-      margin: 2px 0 8px;
-      color: #d8f2ff;
+      font-weight: 800;
+      margin: 4px 0 8px;
+      color: #def5ff;
     }
-
-    .tiny { color: var(--muted); font-size: 0.9rem; margin: 0; }
 
     .reviews {
-      display: grid;
-      gap: 10px;
       margin: 0;
       padding: 0;
       list-style: none;
+      display: grid;
+      gap: 9px;
     }
 
     .reviews li {
       border-radius: 12px;
-      border: 1px solid rgba(255, 255, 255, 0.14);
-      padding: 11px;
-      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      padding: 10px;
+      background: rgba(255, 255, 255, 0.04);
     }
 
     .faq details {
       border-bottom: 1px solid rgba(255, 255, 255, 0.15);
-      padding: 10px 0;
+      padding: 9px 0;
     }
 
     .faq summary {
+      list-style: none;
       cursor: pointer;
       font-weight: 650;
-      list-style: none;
     }
 
     .faq summary::-webkit-details-marker { display: none; }
@@ -282,13 +301,6 @@
     .faq p {
       margin: 8px 0 0;
       color: var(--muted);
-    }
-
-    .easter {
-      margin-top: 10px;
-      font-size: 0.88rem;
-      color: #cbd6ff;
-      opacity: .85;
     }
 
     .confetti {
@@ -299,11 +311,11 @@
       z-index: 50;
     }
 
-    .confetti-piece {
+    .piece {
       position: absolute;
-      width: 9px;
+      top: -22px;
+      width: 10px;
       height: 14px;
-      top: -20px;
       border-radius: 2px;
       opacity: 0.95;
       animation: drop linear forwards;
@@ -314,10 +326,11 @@
       to { transform: translateY(110vh) rotate(760deg); }
     }
 
-    @media (min-width: 860px) {
-      .layout { grid-template-columns: 1.1fr .9fr; }
-      .hero { padding: 34px; }
-      .purchase-card { padding: 22px; }
+    @media (min-width: 900px) {
+      .container { padding-top: 24px; }
+      .layout { grid-template-columns: 1.08fr .92fr; gap: 16px; }
+      .hero { padding: 28px; }
+      .card, .purchase { padding: 20px; }
     }
 
     @media (prefers-reduced-motion: reduce) {
@@ -331,161 +344,164 @@
 </head>
 <body>
   <div class="container">
-    <header class="hero" aria-labelledby="hero-title">
-      <span class="badge">Satirische Payment-Demo</span>
-      <h1 id="hero-title">Premium Luft™<br />Jetzt in digital komprimierter Qualität.</h1>
+    <header class="hero glass" aria-labelledby="hero-title">
+      <span class="badge">Mobile-first Glassmorphism Demo</span>
+      <h1 id="hero-title">Premium Luft™<br />Digital komprimiert. Sofort atembar.</h1>
       <p>
-        Das einzige Produkt, das Sie schon besitzen – aber noch nicht bezahlt haben.
-        Weltweit vertrauen bereits Millionen auf unser patentiertes
-        <span class="pulse">Atem-zu-Abo-Modell</span>.
+        Die einzige Bezahlseite für ein Produkt, das schon überall verfügbar ist.
+        Perfekt für iPhone/Safari (Apple Pay) und Android/Chrome (Google Pay).
       </p>
     </header>
 
     <main class="layout">
       <section>
-        <article class="section" aria-live="polite">
-          <h2>Weltweite Luft-Verkäufe</h2>
-          <p class="sales-number" id="salesCounter">2.154.800</p>
-          <p class="tiny">Aktualisiert in Echtzeit* (*leicht dramatisiert).</p>
+        <article class="card glass" aria-live="polite">
+          <h2>Lustiger Sales Counter</h2>
+          <p id="salesCounter" class="sales">2.154.800</p>
+          <p class="tiny">Steigt kontinuierlich, weil Luft ein Wachstumsmarkt ist.</p>
         </article>
 
-        <article class="section">
-          <h2>Was Kund:innen sagen</h2>
+        <article class="card glass" style="margin-top:12px">
+          <h2>Bewertungen</h2>
           <ul class="reviews">
-            <li>“Hat mein Leben verändert. Jetzt atme ich bewusster.”</li>
-            <li>“Die beste Luft seit Jahren.”</li>
-            <li>“Ich wollte nur testen, jetzt besitze ich Luft in 4K.”</li>
+            <li>★★★★★ „Seit ich Premium Luft nutze, wirkt sogar Montag wie Sonntag.“</li>
+            <li>★★★★★ „Deluxe Bergluft hat mein Homeoffice auf Gipfelniveau gebracht.“</li>
+            <li>★★★★★ „Die Sammler-Edition von gestern riecht nach Nostalgie und Produktivität.“</li>
           </ul>
         </article>
 
-        <article class="section faq">
+        <article class="card glass faq" style="margin-top:12px">
           <h2>FAQ</h2>
           <details>
-            <summary>Ist die Luft wirklich digital?</summary>
-            <p>Natürlich. Wir haben sie sorgfältig in Nullen und Einsen umgewandelt.</p>
+            <summary>Ist Premium Luft™ ein echtes Produkt?</summary>
+            <p>Es ist eine satirische Demo für moderne Browser-Payment-APIs mit echter API-Integration.</p>
           </details>
           <details>
-            <summary>Was ist „Luft von gestern“?</summary>
-            <p>Vintage-Luft mit emotionalem Retro-Aroma. Sehr sammelwürdig.</p>
+            <summary>Warum sehe ich nicht immer beide Bezahlbuttons?</summary>
+            <p>Buttons werden geräteabhängig eingeblendet: Apple Pay auf unterstützten Apple-Geräten/Safari, Google Pay auf unterstützten Payment-Request-Umgebungen.</p>
           </details>
           <details>
-            <summary>Kann ich die Luft zurückgeben?</summary>
-            <p>Nur ungeatmet und originalverpackt im Browser-Cache.</p>
+            <summary>Brauche ich HTTPS?</summary>
+            <p>Ja. Payment Request API und Apple Pay funktionieren nur in sicheren Kontexten (HTTPS oder localhost).</p>
           </details>
-          <p class="easter" id="easterEggHint">Tipp: Tippen Sie 3× auf das Logo-Wort „Premium Luft™“.</p>
         </article>
       </section>
 
-      <aside class="purchase-card" aria-label="Kaufbereich">
-        <h2 class="card-title">Luftpaket wählen</h2>
-        <p class="card-sub">Sichern Sie sich Ihre persönliche Premium-Atmosphäre.</p>
+      <aside class="purchase glass" aria-label="Bezahlbereich">
+        <h2>Luftpaket wählen</h2>
+        <p class="sub">Keine Frameworks, nur HTML/CSS/JS und echte Payment-Flows.</p>
 
-        <form id="airForm" class="packages" aria-label="Luftpakete">
-          <label class="package-option" data-selected="true">
-            <input type="radio" name="airPackage" value="kleine" checked />
-            <span class="package-label">Kleine Luft</span>
-            <span class="package-price">0,99&nbsp;€</span>
+        <form id="packageForm" class="packages" aria-label="Produktpakete">
+          <label class="package" data-selected="true">
+            <input type="radio" name="airPackage" value="small" checked />
+            <span class="package-title">Kleine Luft</span>
+            <span class="package-price">0,99 €</span>
           </label>
 
-          <label class="package-option">
+          <label class="package">
             <input type="radio" name="airPackage" value="premium" />
-            <span class="package-label">Premium Luft</span>
-            <span class="package-price">2,99&nbsp;€</span>
+            <span class="package-title">Premium Luft</span>
+            <span class="package-price">2,99 €</span>
           </label>
 
-          <label class="package-option">
+          <label class="package">
             <input type="radio" name="airPackage" value="deluxe" />
-            <span class="package-label">Deluxe Bergluft</span>
-            <span class="package-price">9,99&nbsp;€</span>
+            <span class="package-title">Deluxe Bergluft</span>
+            <span class="package-price">9,99 €</span>
           </label>
 
-          <label class="package-option">
-            <input type="radio" name="airPackage" value="sammler" />
-            <span class="package-label">Sammler-Edition Luft von gestern</span>
-            <span class="package-price">19,99&nbsp;€</span>
+          <label class="package">
+            <input type="radio" name="airPackage" value="collectors" />
+            <span class="package-title">Sammler-Edition Luft von gestern</span>
+            <span class="package-price">19,99 €</span>
           </label>
         </form>
 
-        <button id="buyButton" class="buy-btn" type="button">Jetzt Luft kaufen</button>
-        <div id="fallbackMessage" class="fallback" hidden></div>
-        <div id="statusMessage" class="status" hidden aria-live="polite"></div>
+        <div class="pay-row" aria-live="polite">
+          <button id="applePayButton" class="pay-btn apple" type="button" hidden>Mit Apple Pay bezahlen</button>
+          <button id="googlePayButton" class="pay-btn google" type="button" hidden>Mit Google Pay bezahlen</button>
+        </div>
+
+        <div id="appleHint" class="msg" hidden>
+          Apple Pay ist auf diesem Gerät verfügbar.
+        </div>
+
+        <div id="fallbackCard" class="msg warning" hidden>
+          Dieses Gerät unterstützt aktuell keine Premium-Luft-Zahlung. Öffne die Seite auf iPhone/Safari für Apple Pay oder Android/Chrome für Google Pay.
+        </div>
+
+        <div id="devWarning" class="msg danger" hidden></div>
+        <div id="statusMessage" class="msg" hidden aria-live="polite"></div>
       </aside>
     </main>
   </div>
 
-  <div class="confetti" id="confetti" aria-hidden="true"></div>
+  <div id="confetti" class="confetti" aria-hidden="true"></div>
 
   <script>
-    // Produktkatalog für Payment Request Details.
-    const AIR_PACKAGES = {
-      kleine: { label: 'Kleine Luft', value: '0.99' },
-      premium: { label: 'Premium Luft', value: '2.99' },
-      deluxe: { label: 'Deluxe Bergluft', value: '9.99' },
-      sammler: { label: 'Sammler-Edition Luft von gestern', value: '19.99' }
+    // Produktdaten für alle Preis-/Payment-Berechnungen.
+    const PACKAGES = {
+      small: { label: 'Kleine Luft', amount: '0.99', displayPrice: '0,99 €' },
+      premium: { label: 'Premium Luft', amount: '2.99', displayPrice: '2,99 €' },
+      deluxe: { label: 'Deluxe Bergluft', amount: '9.99', displayPrice: '9,99 €' },
+      collectors: { label: 'Sammler-Edition Luft von gestern', amount: '19.99', displayPrice: '19,99 €' }
     };
 
-    const salesCounter = document.getElementById('salesCounter');
-    const buyButton = document.getElementById('buyButton');
-    const fallbackMessage = document.getElementById('fallbackMessage');
-    const statusMessage = document.getElementById('statusMessage');
+    // Google Pay Platzhalter-Konfiguration laut Aufgabenstellung.
+    const GOOGLE_PAY_MERCHANT_ID = 'YOUR_GOOGLE_PAY_MERCHANT_ID';
+    const GOOGLE_PAY_GATEWAY_MERCHANT_ID = 'exampleGatewayMerchantId';
+
+    // Apple Pay Platzhalter-Konfiguration laut Aufgabenstellung.
+    const APPLE_PAY_MERCHANT_IDENTIFIER = 'merchant.com.example.premiumluft';
+
+    const salesCounterEl = document.getElementById('salesCounter');
+    const packageCards = document.querySelectorAll('.package');
     const packageInputs = document.querySelectorAll('input[name="airPackage"]');
-    const packageCards = document.querySelectorAll('.package-option');
+    const applePayButton = document.getElementById('applePayButton');
+    const googlePayButton = document.getElementById('googlePayButton');
+    const fallbackCard = document.getElementById('fallbackCard');
+    const statusMessage = document.getElementById('statusMessage');
+    const devWarning = document.getElementById('devWarning');
+    const appleHint = document.getElementById('appleHint');
     const confettiLayer = document.getElementById('confetti');
-    const heroTitle = document.getElementById('hero-title');
 
-    let salesValue = 2154800 + Math.floor(Math.random() * 900);
-    let heroTapCount = 0;
+    let salesValue = 2154800 + Math.floor(Math.random() * 850);
+    let googlePayAvailable = false;
+    let applePayAvailable = false;
 
-    function formatGermanInteger(number) {
-      return new Intl.NumberFormat('de-DE').format(number);
+    function formatNumber(value) {
+      return new Intl.NumberFormat('de-DE').format(value);
     }
 
     function getSelectedPackage() {
       const checked = document.querySelector('input[name="airPackage"]:checked');
-      return AIR_PACKAGES[checked ? checked.value : 'kleine'];
+      return PACKAGES[checked ? checked.value : 'small'];
     }
 
-    function updateSelectionStyles() {
+    function updatePackageSelectionStyles() {
       packageCards.forEach((card) => {
         const radio = card.querySelector('input[type="radio"]');
         card.dataset.selected = radio.checked ? 'true' : 'false';
       });
     }
 
-    function setStatus(message, visible = true) {
+    function setStatus(message, type) {
+      if (!message) {
+        statusMessage.hidden = true;
+        statusMessage.textContent = '';
+        statusMessage.className = 'msg';
+        return;
+      }
       statusMessage.textContent = message;
-      statusMessage.hidden = !visible;
-    }
-
-    function createPaymentRequestData(selectedPackage) {
-      return {
-        methodData: [{ supportedMethods: 'basic-card' }],
-        details: {
-          displayItems: [
-            {
-              label: selectedPackage.label,
-              amount: { currency: 'EUR', value: selectedPackage.value }
-            }
-          ],
-          total: {
-            label: 'Premium Luft™ Bestellung',
-            amount: { currency: 'EUR', value: selectedPackage.value }
-          }
-        },
-        options: {
-          requestPayerName: true,
-          requestPayerEmail: true
-        }
-      };
+      statusMessage.hidden = false;
+      statusMessage.className = `msg ${type || ''}`.trim();
     }
 
     function launchConfetti() {
-      const colors = ['#72d8ff', '#ad80ff', '#7bffc3', '#ffd37e', '#ff8cb3'];
-      const count = 70;
-
-      for (let i = 0; i < count; i += 1) {
+      const colors = ['#78d9ff', '#ad83ff', '#8bffd0', '#ffd37d', '#ff8cb3'];
+      for (let i = 0; i < 72; i += 1) {
         const piece = document.createElement('span');
-        piece.className = 'confetti-piece';
+        piece.className = 'piece';
         piece.style.left = `${Math.random() * 100}%`;
         piece.style.background = colors[Math.floor(Math.random() * colors.length)];
         piece.style.animationDuration = `${2.4 + Math.random() * 1.8}s`;
@@ -495,84 +511,318 @@
       }
     }
 
-    async function handlePurchase() {
-      const selectedPackage = getSelectedPackage();
+    function markPurchaseSuccess() {
+      setStatus('Ihre Luft wird nun digital komprimiert und ausgeliefert.', 'success');
+      launchConfetti();
+      salesValue += Math.floor(16 + Math.random() * 55);
+      salesCounterEl.textContent = formatNumber(salesValue);
+    }
 
+    function showFallbackIfNeeded() {
+      const hasAnyPayment = applePayAvailable || googlePayAvailable;
+      fallbackCard.hidden = hasAnyPayment;
+    }
+
+    function showDeveloperWarnings() {
+      const warnings = [];
+
+      if (GOOGLE_PAY_MERCHANT_ID === 'YOUR_GOOGLE_PAY_MERCHANT_ID') {
+        warnings.push('Google Pay merchantId ist noch ein Platzhalter.');
+      }
+      if (GOOGLE_PAY_GATEWAY_MERCHANT_ID === 'exampleGatewayMerchantId') {
+        warnings.push('Google Pay gatewayMerchantId ist noch ein Platzhalter.');
+      }
+      if (APPLE_PAY_MERCHANT_IDENTIFIER === 'merchant.com.example.premiumluft') {
+        warnings.push('Apple Pay merchantIdentifier ist noch ein Platzhalter.');
+      }
+
+      if (warnings.length > 0) {
+        devWarning.hidden = false;
+        devWarning.textContent = `Entwicklerwarnung: ${warnings.join(' ')} Für echte Zahlungen bitte produktive Merchant-Daten und Backend-Endpunkte konfigurieren.`;
+      } else {
+        devWarning.hidden = true;
+        devWarning.textContent = '';
+      }
+    }
+
+    function getGooglePaymentMethodData() {
+      return {
+        supportedMethods: 'https://google.com/pay',
+        data: {
+          apiVersion: 2,
+          apiVersionMinor: 0,
+          merchantInfo: {
+            merchantId: GOOGLE_PAY_MERCHANT_ID,
+            merchantName: 'Premium Luft'
+          },
+          allowedPaymentMethods: [
+            {
+              type: 'CARD',
+              parameters: {
+                allowedAuthMethods: ['PAN_ONLY', 'CRYPTOGRAM_3DS'],
+                allowedCardNetworks: ['VISA', 'MASTERCARD', 'AMEX']
+              },
+              tokenizationSpecification: {
+                type: 'PAYMENT_GATEWAY',
+                parameters: {
+                  gateway: 'example',
+                  gatewayMerchantId: GOOGLE_PAY_GATEWAY_MERCHANT_ID
+                }
+              }
+            }
+          ]
+        }
+      };
+    }
+
+    function getPaymentDetails() {
+      const selected = getSelectedPackage();
+      return {
+        displayItems: [
+          {
+            label: selected.label,
+            amount: { currency: 'EUR', value: selected.amount }
+          }
+        ],
+        total: {
+          label: 'Premium Luft™ Bestellung',
+          amount: { currency: 'EUR', value: selected.amount }
+        }
+      };
+    }
+
+    // Google Pay via Payment Request API.
+    async function detectGooglePaySupport() {
       if (!window.PaymentRequest) {
-        fallbackMessage.textContent = 'Ihr Browser unterstützt leider keine Premium-Luft-Transaktionen.';
-        fallbackMessage.hidden = false;
+        return false;
+      }
+
+      try {
+        const request = new PaymentRequest(
+          [getGooglePaymentMethodData()],
+          getPaymentDetails(),
+          { requestPayerName: true, requestPayerEmail: true }
+        );
+
+        if (typeof request.canMakePayment === 'function') {
+          const result = await request.canMakePayment();
+          return Boolean(result);
+        }
+
+        return true;
+      } catch (error) {
+        console.warn('Google Pay Supportprüfung fehlgeschlagen:', error);
+        return false;
+      }
+    }
+
+    async function payWithGooglePay() {
+      if (!window.PaymentRequest) {
+        setStatus('Payment Request API ist nicht verfügbar.', 'danger');
         return;
       }
 
-      fallbackMessage.hidden = true;
-      setStatus('Luft wird für den Bezahlvorgang vorbereitet …');
+      setStatus('Google Pay wird gestartet …');
 
+      let paymentResponse;
       try {
-        const { methodData, details, options } = createPaymentRequestData(selectedPackage);
-        const request = new PaymentRequest(methodData, details, options);
+        const request = new PaymentRequest(
+          [getGooglePaymentMethodData()],
+          getPaymentDetails(),
+          { requestPayerName: true, requestPayerEmail: true }
+        );
 
-        const canPay = await request.canMakePayment().catch((paymentSupportError) => {
-          console.warn('canMakePayment fehlgeschlagen:', paymentSupportError);
-          return false;
+        paymentResponse = await request.show();
+
+        // WICHTIG: Diese Anfrage muss serverseitig implementiert werden,
+        // um das Google-Pay-Payment-Token sicher zu verarbeiten und zu autorisieren.
+        const backendResponse = await fetch('/process-google-pay-payment', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            package: getSelectedPackage(),
+            methodName: paymentResponse.methodName,
+            details: paymentResponse.details,
+            payerName: paymentResponse.payerName,
+            payerEmail: paymentResponse.payerEmail
+          })
         });
-        if (!canPay) {
-          fallbackMessage.textContent = 'Ihr Browser unterstützt leider keine Premium-Luft-Transaktionen.';
-          fallbackMessage.hidden = false;
-          setStatus('', false);
+
+        if (!backendResponse.ok) {
+          await paymentResponse.complete('fail');
+          setStatus('Google Pay konnte serverseitig nicht bestätigt werden.', 'danger');
           return;
         }
 
-        const paymentResponse = await request.show();
         await paymentResponse.complete('success');
-
-        setStatus('Ihre Luft wird nun digital komprimiert und ausgeliefert.');
-        launchConfetti();
-        salesValue += Math.floor(20 + Math.random() * 60);
-        salesCounter.textContent = formatGermanInteger(salesValue);
+        markPurchaseSuccess();
       } catch (error) {
         if (error && error.name === 'AbortError') {
-          setStatus('Bestellung abgebrochen. Die Luft bleibt vorerst im Warenkorb der Atmosphäre.');
+          setStatus('Zahlung abgebrochen.', 'warning');
           return;
         }
-        setStatus('Zahlung fehlgeschlagen. Unsere Luftqualität blieb dabei jedoch erstklassig.');
+
+        if (paymentResponse) {
+          try {
+            await paymentResponse.complete('fail');
+          } catch (ignoredCompleteError) {
+            // Absichtlich leer: Wenn complete bereits aufgerufen wurde, ignorieren wir den Folgefehler.
+          }
+        }
+
+        console.error('Google Pay Fehler:', error);
+        setStatus('Google Pay fehlgeschlagen. Details siehe Konsole.', 'danger');
+      }
+    }
+
+    // Apple Pay JS Flow mit Merchant Validation und Platzhaltern.
+    async function detectApplePaySupport() {
+      if (!window.ApplePaySession) {
+        return false;
+      }
+
+      // canMakePayments signalisiert, ob Wallet/Device grundsätzlich zahlen kann.
+      const canPay = typeof ApplePaySession.canMakePayments === 'function'
+        ? ApplePaySession.canMakePayments()
+        : false;
+
+      return Boolean(canPay);
+    }
+
+    function createApplePayRequest() {
+      const selected = getSelectedPackage();
+      return {
+        countryCode: 'DE',
+        currencyCode: 'EUR',
+        merchantCapabilities: ['supports3DS'],
+        supportedNetworks: ['visa', 'mastercard', 'amex'],
+        total: {
+          label: selected.label,
+          amount: selected.amount,
+          type: 'final'
+        }
+      };
+    }
+
+    function payWithApplePay() {
+      if (!window.ApplePaySession) {
+        setStatus('Apple Pay ist auf diesem Gerät nicht verfügbar.', 'danger');
+        return;
+      }
+
+      setStatus('Apple Pay wird gestartet …');
+
+      try {
+        const session = new ApplePaySession(3, createApplePayRequest());
+
+        session.onvalidatemerchant = async (event) => {
+          try {
+            // WICHTIG: Dieser Endpoint MUSS serverseitig implementiert werden.
+            // Er nimmt event.validationURL entgegen und ruft Apple Merchant Validation mit dem
+            // echten Apple-Pay-Merchant-Zertifikat aus dem Backend auf.
+            const response = await fetch('/validate-apple-pay-merchant', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({
+                validationURL: event.validationURL,
+                merchantIdentifier: APPLE_PAY_MERCHANT_IDENTIFIER,
+                initiative: 'web',
+                initiativeContext: window.location.hostname
+              })
+            });
+
+            if (!response.ok) {
+              throw new Error('Merchant Validation fehlgeschlagen');
+            }
+
+            const merchantSession = await response.json();
+            session.completeMerchantValidation(merchantSession);
+          } catch (error) {
+            console.error('Apple Pay Merchant Validation Fehler:', error);
+            session.abort();
+            setStatus('Apple Pay Merchant Validation fehlgeschlagen.', 'danger');
+          }
+        };
+
+        session.onpaymentauthorized = async (event) => {
+          try {
+            // Optionaler Server-Call zur Autorisierung/Abrechnung des Apple-Pay-Tokens.
+            const response = await fetch('/process-apple-pay-payment', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({
+                package: getSelectedPackage(),
+                payment: event.payment,
+                merchantIdentifier: APPLE_PAY_MERCHANT_IDENTIFIER
+              })
+            });
+
+            if (!response.ok) {
+              session.completePayment(ApplePaySession.STATUS_FAILURE);
+              setStatus('Apple Pay konnte serverseitig nicht bestätigt werden.', 'danger');
+              return;
+            }
+
+            session.completePayment(ApplePaySession.STATUS_SUCCESS);
+            markPurchaseSuccess();
+          } catch (error) {
+            console.error('Apple Pay Fehler:', error);
+            session.completePayment(ApplePaySession.STATUS_FAILURE);
+            setStatus('Apple Pay fehlgeschlagen. Details siehe Konsole.', 'danger');
+          }
+        };
+
+        session.oncancel = () => {
+          setStatus('Apple Pay abgebrochen.', 'warning');
+        };
+
+        session.begin();
+      } catch (error) {
+        console.error('Apple Pay Initialisierungsfehler:', error);
+        setStatus('Apple Pay konnte nicht initialisiert werden.', 'danger');
       }
     }
 
     function animateSalesCounter() {
-      salesCounter.textContent = formatGermanInteger(salesValue);
+      salesCounterEl.textContent = formatNumber(salesValue);
       setInterval(() => {
         salesValue += Math.floor(Math.random() * 6);
-        salesCounter.textContent = formatGermanInteger(salesValue);
-      }, 1800);
+        salesCounterEl.textContent = formatNumber(salesValue);
+      }, 1700);
     }
 
-    function setupEasterEgg() {
-      heroTitle.addEventListener('click', () => {
-        heroTapCount += 1;
-        if (heroTapCount === 3) {
-          setStatus('Easter Egg freigeschaltet: +1 unsichtbare Probierluft in Ihrem Konto!');
-          launchConfetti();
-          heroTapCount = 0;
-        }
-      });
+    function updateHttpsNotice() {
+      const secure = window.isSecureContext || location.hostname === 'localhost' || location.hostname === '127.0.0.1';
+      if (!secure) {
+        setStatus('Diese Seite muss über HTTPS laufen, damit Apple Pay/Google Pay funktionieren.', 'danger');
+      }
+    }
+
+    async function initializePayments() {
+      googlePayAvailable = await detectGooglePaySupport();
+      applePayAvailable = await detectApplePaySupport();
+
+      googlePayButton.hidden = !googlePayAvailable;
+      applePayButton.hidden = !applePayAvailable;
+
+      // Apple-Pay-Hinweis nur auf unterstützten Geräten/Safari anzeigen.
+      appleHint.hidden = !applePayAvailable;
+
+      showFallbackIfNeeded();
     }
 
     packageInputs.forEach((input) => {
-      input.addEventListener('change', updateSelectionStyles);
+      input.addEventListener('change', updatePackageSelectionStyles);
     });
 
-    buyButton.addEventListener('click', handlePurchase);
+    googlePayButton.addEventListener('click', payWithGooglePay);
+    applePayButton.addEventListener('click', payWithApplePay);
 
-    // Initialisierung der dynamischen Elemente.
-    updateSelectionStyles();
+    updatePackageSelectionStyles();
     animateSalesCounter();
-    setupEasterEgg();
-
-    if (!window.PaymentRequest) {
-      buyButton.disabled = true;
-      fallbackMessage.textContent = 'Ihr Browser unterstützt leider keine Premium-Luft-Transaktionen.';
-      fallbackMessage.hidden = false;
-    }
+    showDeveloperWarnings();
+    updateHttpsNotice();
+    initializePayments();
   </script>
 </body>
 </html>
