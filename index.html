@@ -511,7 +511,10 @@
         const { methodData, details, options } = createPaymentRequestData(selectedPackage);
         const request = new PaymentRequest(methodData, details, options);
 
-        const canPay = await request.canMakePayment().catch(() => true);
+        const canPay = await request.canMakePayment().catch((paymentSupportError) => {
+          console.warn('canMakePayment fehlgeschlagen:', paymentSupportError);
+          return false;
+        });
         if (!canPay) {
           fallbackMessage.textContent = 'Ihr Browser unterstützt leider keine Premium-Luft-Transaktionen.';
           fallbackMessage.hidden = false;
@@ -527,7 +530,11 @@
         salesValue += Math.floor(20 + Math.random() * 60);
         salesCounter.textContent = formatGermanInteger(salesValue);
       } catch (error) {
-        setStatus('Bestellung abgebrochen. Die Luft bleibt vorerst im Warenkorb der Atmosphäre.');
+        if (error && error.name === 'AbortError') {
+          setStatus('Bestellung abgebrochen. Die Luft bleibt vorerst im Warenkorb der Atmosphäre.');
+          return;
+        }
+        setStatus('Zahlung fehlgeschlagen. Unsere Luftqualität blieb dabei jedoch erstklassig.');
       }
     }
 
